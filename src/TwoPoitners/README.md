@@ -2,7 +2,7 @@
 
 Java solutions to Two Pointers problems from LeetCode.
 
-**Progress: 4 / 27**
+**Progress: 10 / 27**
 
 Status: ✅ solved · 🟡 in progress · ⏳ to do
 
@@ -16,12 +16,12 @@ Start one pointer at the beginning and one at the end, then move them toward eac
 | 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) | Easy | [ValidPalindrome.java](ValidPalindrome.java) | ✅ |
 | 977 | [Squares of a Sorted Array](https://leetcode.com/problems/squares-of-a-sorted-array/) | Easy | [SquaresOfASortedArray.java](SquaresOfASortedArray.java) | ✅ |
 | 167 | [Two Sum II – Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | Medium | [TwoSum.java](TwoSum.java) | ✅ |
-| 680 | [Valid Palindrome II](https://leetcode.com/problems/valid-palindrome-ii/) | Easy | – | ⏳ |
-| 11 | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | Medium | – | ⏳ |
-| 881 | [Boats to Save People](https://leetcode.com/problems/boats-to-save-people/) | Medium | – | ⏳ |
-| 15 | [3Sum](https://leetcode.com/problems/3sum/) | Medium | – | ⏳ |
-| 16 | [3Sum Closest](https://leetcode.com/problems/3sum-closest/) | Medium | – | ⏳ |
-| 18 | [4Sum](https://leetcode.com/problems/4sum/) | Medium | – | ⏳ |
+| 680 | [Valid Palindrome II](https://leetcode.com/problems/valid-palindrome-ii/) | Easy | [ValidPalindromII.java](ValidPalindromII.java) | ✅ |
+| 11 | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | Medium | [ContainerWithMostWater.java](ContainerWithMostWater.java) | ✅ |
+| 881 | [Boats to Save People](https://leetcode.com/problems/boats-to-save-people/) | Medium | [BoatsToSavePeople.java](BoatsToSavePeople.java) | ✅ |
+| 15 | [3Sum](https://leetcode.com/problems/3sum/) | Medium | [ThreeSum.java](ThreeSum.java) | ✅ |
+| 16 | [3Sum Closest](https://leetcode.com/problems/3sum-closest/) | Medium | [ThreeSumClosest.java](ThreeSumClosest.java) | ✅ |
+| 18 | [4Sum](https://leetcode.com/problems/4sum/) | Medium | [ForthSum.java](ForthSum.java) | ✅ |
 | 42 | [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) | Hard | – | ⏳ |
 
 ## 2. Same direction (read/write pointer, in-place)
@@ -78,6 +78,30 @@ Negative numbers flip order when squared, so the largest square is always at one
 ### 167. Two Sum II – Input Array Is Sorted — O(n) time, O(1) space
 
 Start with `left` at the smallest and `right` at the largest number. If the sum is too big, `right--`; if it is too small, `left++`; otherwise return `[left + 1, right + 1]` (1-indexed). A `HashMap` would also be O(n) time, but O(n) space — the problem requires constant space, and the map ignores that the array is sorted (that's the approach for the unsorted Two Sum #1).
+
+### 680. Valid Palindrome II — O(n) time, O(1) space
+
+Walk `left` and `right` toward each other like in Valid Palindrome. At the first mismatch you may delete one character, so there are two options: skip the left character (`left + 1 .. right`) or skip the right one (`left .. right - 1`). The string is valid if either remaining range is a palindrome. Only one deletion is allowed, so a second mismatch inside the chosen range means `false`.
+
+### 11. Container With Most Water — O(n) time, O(1) space
+
+Start with the widest container (`left = 0`, `right = n - 1`); its area is `min(height[left], height[right]) * (right - left)`. Always move the pointer at the **shorter** wall: the width shrinks anyway, and keeping the short wall can never give a bigger area, so the only chance to improve is to look for a taller wall on that side. Keep the maximum seen.
+
+### 881. Boats to Save People — O(n log n) time (sorting), O(1) extra space
+
+Sort the weights. The heaviest person (`right`) always takes a boat; if the lightest person (`left`) fits with them (`people[left] + people[right] <= limit`), they share it and `left++`. Then `right--` and count one boat either way. Loop while `left <= right` so a single person left in the middle also gets a boat.
+
+### 15. 3Sum — O(n²) time, O(1) extra space (besides the result)
+
+Sort, then fix `nums[i]` and run Two Sum II on `i + 1 .. n - 1` looking for `-nums[i]`. To avoid duplicate triplets, skip `i` when `nums[i] == nums[i - 1]`, and after a match move `left`/`right` past equal values. Once `nums[i] > 0` you can `break` — every number after it is positive too.
+
+### 16. 3Sum Closest — O(n²) time, O(1) space
+
+Same structure as 3Sum: sort, fix `i`, move `left`/`right` depending on whether the sum is below or above `target`. On every step compare `Math.abs(sum - target)` with the best so far and keep the closer sum. If `sum == target` return right away — nothing can be closer. Initialize `closest` with the first three numbers, not with `0` or `Integer.MAX_VALUE` (the latter overflows in `closest - target`).
+
+### 18. 4Sum — O(n³) time, O(1) extra space (besides the result)
+
+3Sum with one more loop: fix `i`, then `j` starting at `i + 1`, then run two pointers on `j + 1 .. n - 1`. Skip duplicates on all four levels (`i`, `j`, `left`, `right`). Compute the sum as `long` — four values up to ±10⁹ overflow an `int` (e.g. `4 × 10⁹` wraps around to `-294967296`).
 
 ## Running
 
