@@ -2,7 +2,7 @@
 
 Java solutions to Two Pointers problems from LeetCode.
 
-**Progress: 10 / 27**
+**Progress: 14 / 27**
 
 Status: ✅ solved · 🟡 in progress · ⏳ to do
 
@@ -30,10 +30,10 @@ A slow "write" pointer marks where the next kept element goes; a fast "read" poi
 
 | # | Problem | Difficulty | File | Status |
 |---|---------|------------|------|--------|
-| 27 | [Remove Element](https://leetcode.com/problems/remove-element/) | Easy | – | ⏳ |
-| 26 | [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | Easy | – | ⏳ |
-| 283 | [Move Zeroes](https://leetcode.com/problems/move-zeroes/) | Easy | – | ⏳ |
-| 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/) | Easy | – | ⏳ |
+| 27 | [Remove Element](https://leetcode.com/problems/remove-element/) | Easy | [RemoveElement.java](RemoveElement.java) | ✅ |
+| 26 | [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | Easy | [RemoveDuplicatesFromSortedArray.java](RemoveDuplicatesFromSortedArray.java) | ✅ |
+| 283 | [Move Zeroes](https://leetcode.com/problems/move-zeroes/) | Easy | [MoveZeroes.java](MoveZeroes.java) | ✅ |
+| 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/) | Easy | [IsSubsequence.java](IsSubsequence.java) | ✅ |
 | 80 | [Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/) | Medium | – | ⏳ |
 | 75 | [Sort Colors](https://leetcode.com/problems/sort-colors/) (Dutch National Flag, 3 pointers) | Medium | – | ⏳ |
 
@@ -102,6 +102,22 @@ Same structure as 3Sum: sort, fix `i`, move `left`/`right` depending on whether 
 ### 18. 4Sum — O(n³) time, O(1) extra space (besides the result)
 
 3Sum with one more loop: fix `i`, then `j` starting at `i + 1`, then run two pointers on `j + 1 .. n - 1`. Skip duplicates on all four levels (`i`, `j`, `left`, `right`). Compute the sum as `long` — four values up to ±10⁹ overflow an `int` (e.g. `4 × 10⁹` wraps around to `-294967296`).
+
+### 27. Remove Element — O(n) time, O(1) space
+
+`left` reads every element, `k` marks where the next kept element is written. Whenever `nums[left] != val`, copy it to `nums[k++]`. At the end `k` is the number of kept elements. Loop over the **whole** array (`left < nums.length`) — stopping at `nums.length - 1` skips the last element. Advance `left` on every step, not only when copying, or the loop never ends on a `val`.
+
+### 26. Remove Duplicates from Sorted Array — O(n) time, O(n) space (with the `HashSet`)
+
+Same read/write pattern as Remove Element: copy `nums[left]` to `nums[k++]` only the first time a value is seen, tracked with a `HashSet`. Since the array is sorted, equal values are next to each other, so the set can be dropped for O(1) space: a value is new exactly when `nums[left] != nums[k - 1]`.
+
+### 283. Move Zeroes — O(n) time, O(1) space
+
+First pass: copy every non-zero element forward to `nums[k++]`, which keeps their relative order. Second pass: fill `k .. n - 1` with zeros. A one-pass alternative is to swap `nums[left]` with `nums[k]` instead of copying.
+
+### 392. Is Subsequence — O(|t|) time, O(1) space
+
+Walk through `t` with `i` and keep a pointer `left` into `s`. When `s.charAt(left) == t.charAt(i)`, that character of `s` is matched, so `left++`; `i` always moves on. Check `left < s.length()` before `charAt`, and at the end `s` is a subsequence if all of it was matched (`k == s.length()`, compare with `s`, not `t`). An empty `s` is always a subsequence.
 
 ## Running
 
