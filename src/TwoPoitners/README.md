@@ -2,7 +2,7 @@
 
 Java solutions to Two Pointers problems from LeetCode.
 
-**Progress: 14 / 27**
+**Progress: 16 / 27**
 
 Status: ✅ solved · 🟡 in progress · ⏳ to do
 
@@ -34,8 +34,8 @@ A slow "write" pointer marks where the next kept element goes; a fast "read" poi
 | 26 | [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | Easy | [RemoveDuplicatesFromSortedArray.java](RemoveDuplicatesFromSortedArray.java) | ✅ |
 | 283 | [Move Zeroes](https://leetcode.com/problems/move-zeroes/) | Easy | [MoveZeroes.java](MoveZeroes.java) | ✅ |
 | 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/) | Easy | [IsSubsequence.java](IsSubsequence.java) | ✅ |
-| 80 | [Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/) | Medium | – | ⏳ |
-| 75 | [Sort Colors](https://leetcode.com/problems/sort-colors/) (Dutch National Flag, 3 pointers) | Medium | – | ⏳ |
+| 80 | [Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/) | Medium | [RemoveDuplicatesFromSortedArrayII.java](RemoveDuplicatesFromSortedArrayII.java) | ✅ |
+| 75 | [Sort Colors](https://leetcode.com/problems/sort-colors/) (Dutch National Flag, 3 pointers) | Medium | [SortColors.java](SortColors.java) | ✅ |
 
 ## 3. Two pointers on two sequences
 
@@ -118,6 +118,14 @@ First pass: copy every non-zero element forward to `nums[k++]`, which keeps thei
 ### 392. Is Subsequence — O(|t|) time, O(1) space
 
 Walk through `t` with `i` and keep a pointer `left` into `s`. When `s.charAt(left) == t.charAt(i)`, that character of `s` is matched, so `left++`; `i` always moves on. Check `left < s.length()` before `charAt`, and at the end `s` is a subsequence if all of it was matched (`k == s.length()`, compare with `s`, not `t`). An empty `s` is always a subsequence.
+
+### 80. Remove Duplicates from Sorted Array II — O(n) time, O(n) space (with the `HashMap`)
+
+Same read/write pattern as #26, but each value may be kept up to twice. A `HashMap` counts how many times each value was written; copy `nums[left]` to `nums[k++]` only while its count is below 2. Loop over the **whole** array (`left <= nums.length - 1`) and don't write anything past `k` — doing so changes the returned length. Because the array is sorted, the map can be dropped for O(1) space (which the problem asks for): keep `nums[left]` when `k < 2 || nums[left] != nums[k - 2]`.
+
+### 75. Sort Colors — O(n²) time (bubble sort), O(1) space
+
+Current solution is bubble sort: repeatedly swap adjacent elements that are out of order (`nums[left] > nums[left + 1]`), shrinking `right` after each pass since the largest value has bubbled to the end. Stop the inner loop at `left < right` so `left + 1` stays in bounds. The intended one-pass O(n) solution is the Dutch National Flag: keep `low`, `mid`, `high`; on `0` swap `mid` with `low` and advance both, on `1` just `mid++`, on `2` swap `mid` with `high` and `high--` without moving `mid` (the swapped-in value still needs checking).
 
 ## Running
 
