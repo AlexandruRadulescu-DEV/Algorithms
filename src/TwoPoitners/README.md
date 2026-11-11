@@ -2,7 +2,7 @@
 
 Java solutions to Two Pointers problems from LeetCode.
 
-**Progress: 16 / 27**
+**Progress: 23 / 27**
 
 Status: ✅ solved · 🟡 in progress · ⏳ to do
 
@@ -43,10 +43,10 @@ One pointer per input, advanced depending on how the current elements compare.
 
 | # | Problem | Difficulty | File | Status |
 |---|---------|------------|------|--------|
-| 88 | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) (start from the end!) | Easy | – | ⏳ |
-| 350 | [Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | Easy | – | ⏳ |
-| 844 | [Backspace String Compare](https://leetcode.com/problems/backspace-string-compare/) (right to left, O(1) space) | Easy | – | ⏳ |
-| 986 | [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/) | Medium | – | ⏳ |
+| 88 | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) (start from the end!) | Easy | [MergeSortedArray.java](MergeSortedArray.java) | ✅ |
+| 350 | [Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | Easy | [InteractionOfTwoArraysII.java](InteractionOfTwoArraysII.java) | ✅ |
+| 844 | [Backspace String Compare](https://leetcode.com/problems/backspace-string-compare/) (right to left, O(1) space) | Easy | [BackspaceStringCompare.java](BackspaceStringCompare.java) | ✅ |
+| 986 | [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/) | Medium | [IntervalListIntersaction.java](IntervalListIntersaction.java) | ✅ |
 
 ## 4. Fast & slow (linked lists / cycles)
 
@@ -54,9 +54,9 @@ The fast pointer moves 2 steps for each 1 step of the slow pointer.
 
 | # | Problem | Difficulty | File | Status |
 |---|---------|------------|------|--------|
-| 876 | [Middle of the Linked List](https://leetcode.com/problems/middle-of-the-linked-list/) | Easy | – | ⏳ |
-| 141 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | Easy | – | ⏳ |
-| 234 | [Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/) | Easy | – | ⏳ |
+| 876 | [Middle of the Linked List](https://leetcode.com/problems/middle-of-the-linked-list/) | Easy | [MiddleOfTheLinkedList.java](MiddleOfTheLinkedList.java) | ✅ |
+| 141 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | Easy | [LinkedListCycle.java](LinkedListCycle.java) | ✅ |
+| 234 | [Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/) | Easy | [PalindromLinkedList.java](PalindromLinkedList.java) | ✅ |
 | 19 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | Medium | – | ⏳ |
 | 142 | [Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/) | Medium | – | ⏳ |
 | 287 | [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) (Floyd on an array) | Medium | – | ⏳ |
@@ -126,6 +126,34 @@ Same read/write pattern as #26, but each value may be kept up to twice. A `HashM
 ### 75. Sort Colors — O(n²) time (bubble sort), O(1) space
 
 Current solution is bubble sort: repeatedly swap adjacent elements that are out of order (`nums[left] > nums[left + 1]`), shrinking `right` after each pass since the largest value has bubbled to the end. Stop the inner loop at `left < right` so `left + 1` stays in bounds. The intended one-pass O(n) solution is the Dutch National Flag: keep `low`, `mid`, `high`; on `0` swap `mid` with `low` and advance both, on `1` just `mid++`, on `2` swap `mid` with `high` and `high--` without moving `mid` (the swapped-in value still needs checking).
+
+### 88. Merge Sorted Array — O(m + n) time, O(1) space
+
+Fill `nums1` **from the back**: `i = m - 1` (last real value in `nums1`), `j = n - 1` (last in `nums2`), `k = m + n - 1` (write position). Write the larger of `nums1[i]` and `nums2[j]` to `nums1[k--]`. Going backward never overwrites a value not read yet. Loop while `j >= 0` — once `nums2` is used up, what remains in `nums1` is already in place.
+
+### 350. Intersection of Two Arrays II — O(n log n + m log m) time (sorting), O(1) extra space (besides the result)
+
+Sort both arrays and walk them with one pointer each (here from the end). Equal values go into the result and both pointers move; otherwise move only the pointer at the larger value. The result has at most `min(n, m)` elements, so allocate that and trim with `Arrays.copyOf(result, k)`.
+
+### 844. Backspace String Compare — O(n + m) time, O(n + m) space
+
+Read each string **right to left** and count pending `#` in `skip`: a `#` adds one, a normal character is dropped while `skip > 0`, otherwise it is kept. Build the cleaned strings this way and compare them with `equals`. The O(1) space follow-up compares the two strings character by character with the same skip logic, without building them.
+
+### 986. Interval List Intersections — O(n + m) time, O(1) extra space (besides the result)
+
+One pointer per list. Two intervals `a` and `b` overlap on `[max(a[0], b[0]), min(a[1], b[1])]` if that start is `<=` that end. Then advance the pointer of the interval that **ends first** — it can't overlap anything else in the other list. The count of intersections is unknown, so allocate `n + m` rows and trim with `Arrays.copyOf(result, k)` (or collect in a `List<int[]>` and use `toArray(new int[0][])`). Watch the indexes: `b = secondList[j]`, not `firstList[j]`.
+
+### 876. Middle of the Linked List — O(n) time, O(1) space
+
+Count the nodes, then walk `count / 2` steps from `head` (integer division: 5 / 2 = 2 steps lands on the 3rd node; for even lengths it lands on the second middle, as required). After `k` steps you are on node `k + 1`, because `head` is already node 1. One-pass alternative: `slow` 1 step, `fast` 2 steps; when `fast` reaches the end, `slow` is the middle.
+
+### 141. Linked List Cycle — O(n) time, O(1) space
+
+Floyd's tortoise and hare: `slow` moves 1 step, `fast` moves 2. If `fast` reaches the end there is no cycle (`false`); if `slow == fast` they met inside the cycle (`true`) — once both are in the cycle the gap shrinks by exactly 1 per step, so `fast` can't jump over `slow`. Loop condition `fast != null && fast.next != null`: the first check catches even-length lists, the second odd-length ones, and the order matters because `&&` short-circuits.
+
+### 234. Palindrome Linked List — O(n) time, O(n) space (with the copy)
+
+`ListNode aux = head` does **not** copy the list — it is a second reference to the same nodes, so reversing it in place also breaks the original. Current solution builds a real copy (`new ListNode(head.val)` for every node), reverses the copy and compares it node by node with the original. The O(1) space solution: find the middle with `slow`/`fast`, reverse only the second half, then compare it with the first half while the reversed half is not `null`.
 
 ## Running
 
