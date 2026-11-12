@@ -2,7 +2,7 @@
 
 Java solutions to Two Pointers problems from LeetCode.
 
-**Progress: 23 / 27**
+**Progress: 26 / 27**
 
 Status: ✅ solved · 🟡 in progress · ⏳ to do
 
@@ -57,9 +57,9 @@ The fast pointer moves 2 steps for each 1 step of the slow pointer.
 | 876 | [Middle of the Linked List](https://leetcode.com/problems/middle-of-the-linked-list/) | Easy | [MiddleOfTheLinkedList.java](MiddleOfTheLinkedList.java) | ✅ |
 | 141 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | Easy | [LinkedListCycle.java](LinkedListCycle.java) | ✅ |
 | 234 | [Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/) | Easy | [PalindromLinkedList.java](PalindromLinkedList.java) | ✅ |
-| 19 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | Medium | – | ⏳ |
-| 142 | [Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/) | Medium | – | ⏳ |
-| 287 | [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) (Floyd on an array) | Medium | – | ⏳ |
+| 19 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | Medium | [RemoveNthNodeFromEndOfList.java](RemoveNthNodeFromEndOfList.java) | ✅ |
+| 142 | [Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/) | Medium | [LinkedListCycleII.java](LinkedListCycleII.java) | ✅ |
+| 287 | [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) (Floyd on an array) | Medium | [FindTheDuplicateNumber.java](FindTheDuplicateNumber.java) | ✅ |
 
 ## Notes
 
@@ -154,6 +154,18 @@ Floyd's tortoise and hare: `slow` moves 1 step, `fast` moves 2. If `fast` reache
 ### 234. Palindrome Linked List — O(n) time, O(n) space (with the copy)
 
 `ListNode aux = head` does **not** copy the list — it is a second reference to the same nodes, so reversing it in place also breaks the original. Current solution builds a real copy (`new ListNode(head.val)` for every node), reverses the copy and compares it node by node with the original. The O(1) space solution: find the middle with `slow`/`fast`, reverse only the second half, then compare it with the first half while the reversed half is not `null`.
+
+### 19. Remove Nth Node From End of List — O(n) time, O(1) space
+
+Put a `dummy` node before `head` (`new ListNode(0, head)`) so even the first node has a node before it — that handles removing the head without a special case. Start `fast` and `slow` at `dummy`, move `fast` `n` steps ahead, then move both until `fast.next == null`. The gap stays `n`, so `slow` stops right **before** the node to delete: `slow.next = slow.next.next`. Return `dummy.next`, not `head` (if the head was removed, `head` still points to the deleted node). Don't move `head` itself while walking, or you lose the start of the list.
+
+### 142. Linked List Cycle II — O(n) time, O(1) space
+
+Phase 1 is Linked List Cycle: `slow` 1 step, `fast` 2 steps until `slow == fast`. The meeting point is **not** necessarily the start of the cycle. Phase 2: put `p` at `head`, leave `slow` at the meeting point, and move **both** 1 step at a time; they meet exactly at the start of the cycle, because the distance from `head` to the cycle start equals the distance from the meeting point to the cycle start (plus whole laps). Compare nodes with `==`, never by `.val` — values can repeat.
+
+### 287. Find the Duplicate Number — O(n) time, O(n) space (with the `HashSet`)
+
+Current solution adds each number to a `HashSet` and returns the first one that is already there. Correct, but the problem asks for O(1) extra space and no changes to `nums` (so no sorting). The intended solution is Linked List Cycle II on the array: treat index `i` as a node whose `next` is `nums[i]`. The duplicate value has two indexes pointing to it, so it is the start of the cycle — find it with `slow = nums[slow]`, `fast = nums[nums[fast]]`, then phase 2 from index `0`.
 
 ## Running
 
